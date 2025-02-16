@@ -1,18 +1,17 @@
 #include <stdio.h>
 
 int main()
-{
+{  printf("\n\t\tFCFS\n\n");
     int n, j, i;
     float avgw = 0, avgt = 0;
 
     printf("Enter the number of Processes: ");
     scanf("%d", &n);
-
-    printf("Enter the Burst time of each Process:\n");
+    printf("\n");
     int bt[n];
     for(i = 0; i < n; i++) 
     {
-        printf("Process %d: ", i + 1);
+        printf("Enter the burst time of process %d : ", i + 1);
         scanf("%d", &bt[i]);
     }
 
@@ -32,16 +31,17 @@ int main()
     }
 
     printf("\nProcess ID   Burst Time   Waiting Time   Turnaround Time\n");
+    printf("________________________________________________________\n\n");
     for(i = 0; i < n; i++)
     {
-        printf("P[%d]\t\t%d\t\t%d\t\t%d\n", i + 1, bt[i], wt[i], tt[i]);
+        printf("  P[%d]\t\t%d\t\t%d\t\t%d\n", i + 1, bt[i], wt[i], tt[i]);
     }
 
     printf("\nAverage Waiting Time = %f\n", avgw / n);
     printf("Average Turnaround Time = %f\n", avgt / n);
 
     int temp = 0;
-    printf("\n=====================================================================\n");
+    printf("\n=========================================================\n");
     printf("Gantt Chart:\n");
     printf("\t");
     for(i = 0; i < n; i++)

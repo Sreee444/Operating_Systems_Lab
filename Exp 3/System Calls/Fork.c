@@ -23,7 +23,6 @@ void main()
        
        wait(NULL);
        
-       /*printf("The parent process waits till Child process is terminated\n ");*/
      }
      
     if ( childpid < 0)

@@ -1,34 +1,36 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
 
 int mutex = 1, full = 0, empty = 3;
 
-void wait(int *s) {
-    (*s)--;
+int wait(int s) {
+    s--;
+    return s;
 }
 
-void signal(int *s) {
-    (*s)++;
+int signal(int s) {
+    s++;
+    return s;
 }
 
 void producer() {
-    wait(&mutex);
-    signal(&full);
-    wait(&empty);
-    signal(&mutex);
+    mutex = wait(mutex);
+    full = signal(full);
+    empty = wait(empty);
+    mutex = signal(mutex);
 }
 
 void consumer() {
-    wait(&mutex);
-    wait(&full);
-    signal(&empty);
-    signal(&mutex);
+    mutex = wait(mutex);
+    full = wait(full);
+    empty = signal(empty);
+    mutex = signal(mutex);
 }
 
-int main() {
-    int ch;
+void main() {
+    int ch, cho = 1;
 
-    while (1) {
+    while(cho == 1) {
         printf("Choose an Operation : \n");
         printf("1 : Producer \n");
         printf("2 : Consumer\n");
@@ -36,9 +38,9 @@ int main() {
         printf("Enter choice : ");
         scanf("%d", &ch);
 
-        switch (ch) {
+        switch(ch) {
             case 1:
-                if (mutex == 1 && empty > 0) {
+                if(mutex == 1 && empty != 0) {
                     producer();
                     printf("Produced an item successfully\n");
                 } else {
@@ -47,7 +49,7 @@ int main() {
                 break;
 
             case 2:
-                if (mutex == 1 && full > 0) {
+                if(mutex == 1 && full != 0) {
                     consumer();
                     printf("Consumed an item successfully\n");
                 } else {
@@ -57,11 +59,11 @@ int main() {
 
             case 3:
                 exit(0);
+                break;
 
             default:
                 printf("Wrong choice\n");
+                break;
         }
     }
-
-    return 0;
 }

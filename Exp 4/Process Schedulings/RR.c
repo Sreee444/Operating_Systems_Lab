@@ -1,96 +1,78 @@
 #include <stdio.h>
 
-int main()
-{
-    printf("\n\t\tRound Robin Scheduling\n\n");
-    int n, i, j, time = 0, tq;
-    float avgw = 0, avgt = 0;
+int main() {
+    float wAvg = 0, tAvg = 0;
+    int n, quantum;
 
-    printf("Enter the number of Processes: ");
+    printf("Enter the number of processes: ");
     scanf("%d", &n);
-    printf("\n");
 
-    int bt[n], wt[n], tt[n], pid[n], rem_bt[n];
+    int bTime[n], wTime[n], tTime[n], remainingTime[n];
 
-    for (i = 0; i < n; i++)
-    {
-        printf("Enter the burst time of process %d : ", i + 1);
-        scanf("%d", &bt[i]);
-        pid[i] = i + 1;
-        rem_bt[i] = bt[i];  
+    for (int i = 0; i < n; i++) {
+        printf("Enter the burst time of process %d: ", i + 1);
+        scanf("%d", &bTime[i]);
+        remainingTime[i] = bTime[i];
+        wTime[i] = 0; 
     }
 
     printf("Enter the time quantum: ");
-    scanf("%d", &tq);
+    scanf("%d", &quantum);
 
-    while (1)
-    {
-        int done = 1;
-        for (i = 0; i < n; i++)
-        {
-            if (rem_bt[i] > 0)
-            {
+    int time = 0, done, gantt[100], ganttTime[100], ganttIndex = 0;
+
+    do {
+        done = 1;
+        for (int i = 0; i < n; i++) {
+            if (remainingTime[i] > 0) {
                 done = 0;
-                if (rem_bt[i] > tq)
-                {
-                    time += tq;
-                    rem_bt[i] -= tq;
-                }
-                else
-                {
-                    time += rem_bt[i];
-                    wt[i] = time - bt[i];
-                    rem_bt[i] = 0;
+                gantt[ganttIndex] = i;         
+                ganttTime[ganttIndex++] = time; 
+
+                if (remainingTime[i] > quantum) {
+                    time += quantum;
+                    remainingTime[i] -= quantum;
+                } else {
+                    time += remainingTime[i];
+                    wTime[i] = time - bTime[i];
+                    remainingTime[i] = 0;
                 }
             }
         }
-        if (done == 1)
-            break;
+    } while (!done);
+
+    for (int i = 0; i < n; i++) {
+        tTime[i] = bTime[i] + wTime[i];
+        wAvg += wTime[i];
+        tAvg += tTime[i];
     }
 
-    for (i = 0; i < n; i++)
-    {
-        tt[i] = bt[i] + wt[i];
-        avgw += wt[i];
-        avgt += tt[i];
+    printf("\nPROCESS ID\tBURST TIME\tWAITING TIME\tTURNAROUND TIME\n");
+    for (int i = 0; i < n; i++) {
+        printf("\n P[%d]\t\t %d\t\t %d\t\t %d", i + 1, bTime[i], wTime[i], tTime[i]);
     }
 
-    printf("\nProcess ID   Burst Time   Waiting Time   Turnaround Time\n");
-    printf("________________________________________________________\n\n");
-    for (i = 0; i < n; i++)
-    {
-        printf("  P[%d]\t\t%d\t\t%d\t\t%d\n", pid[i], bt[i], wt[i], tt[i]);
-    }
+    printf("\n\nAverage Waiting Time = %.2f ms", wAvg / (float)n);
+    printf("\nAverage Turnaround Time = %.2f ms\n", tAvg / (float)n);
 
-    printf("\nAverage Waiting Time = %f\n", avgw / n);
-    printf("Average Turnaround Time = %f\n", avgt / n);
-
-    int temp = 0;
-    printf("\n=========================================================\n");
-    printf("Gantt Chart:\n");
-    printf("\t");
-    for (i = 0; i < n; i++)
-    {
-        printf("--------");
-    }
-    printf("\n\t|");
-    for (i = 0; i < n; i++)
-    {
-        printf(" P[%d]  |", pid[i]);
-    }
-    printf("\n\t");
-    for (i = 0; i < n; i++)
-    {
-        printf("--------");
-    }
-
-    printf("\n\t0");
-    for (i = 0; i < n; i++)
-    {
-        temp += bt[i];
-        printf("\t%d", temp);
+    printf("\nGANTT CHART:\n");
+    for (int i = 0; i < ganttIndex; i++) {
+        printf(" -------");
     }
     printf("\n");
-
+    for (int i = 0; i < ganttIndex; i++) {
+        printf("|  P[%d]\t", gantt[i] + 1);
+    }
+    printf("|");
+    printf("\n");
+    for (int i = 0; i < ganttIndex; i++) {
+        printf(" -------");
+    }
+    printf("\n");
+    for (int i = 0; i < ganttIndex; i++) {
+        printf("%d\t", ganttTime[i]);
+    }
+    printf("%d\n", time);
+   
     return 0;
 }

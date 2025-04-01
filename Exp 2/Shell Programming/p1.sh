@@ -9,7 +9,7 @@ read R1
 echo "Enter your Register Number : "
 read R
 echo "Name : " $N
-echo "Semester: " se
+echo "Semester: " $Se
 echo "Batch : " $B
 echo "Roll No : " $R1
 echo "Register Number : " $R
